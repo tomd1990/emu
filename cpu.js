@@ -1,5 +1,14 @@
-const opcodes = require('./Opcodes');
-const memory = require('./memory');
+// const opcodes = require('./Opcodes');
+// const memory = require('./memory');
+//import opcodes from './Opcodes'
+import MMU from './memory.js';
+import opcodes from './Opcodes.js';
+
+
+
+
+
+
 class Register_8 {
   constructor(content) {
     this.value = new Uint8Array(1);
@@ -48,7 +57,7 @@ class CPU_Z80 {
     this.SP = new Register_16(init);
     this.PC = new Register_16(init);
     this._clock = {m:0, t:0};
-    this.Operations = opcodes.OP;
+    this.Operations = opcodes;
 
     //expose 64KB to CPU
     this.mem = MMU;
@@ -70,9 +79,9 @@ class CPU_Z80 {
     console.log("| m_clock:"+ this._clock.m +" | t_clock:"+ this._clock.t+" |");
   }
 }
-
-var memoryUnit = new memory.MMU;
+var memoryUnit = new MMU;
 var core = new CPU_Z80(0, memoryUnit);
+
 core.A.setValue(0x00);
 core.B.setValue(0xFF);
 core.E.setValue(0xF0);
@@ -89,6 +98,39 @@ core.mem.writeByte(0x0001,0xCB);
 //core.A.addValue(-1*0x60);
 //core.Operations[145].exec(core);
 //core.Operations[196].exec(core);
+var fileByteArray = [];
+
+document.querySelector('input').addEventListener('change', function() {
+
+  var reader = new FileReader();
+
+  reader.readAsArrayBuffer(this.files[0]);
+  reader.onloadend = function (evt) {
+    if (evt.target.readyState == FileReader.DONE) {
+       var arrayBuffer = evt.target.result,
+           array = new Uint8Array(arrayBuffer);
+       for (var i = 0; i < array.length; i++) {
+           fileByteArray.push(array[i]);
+        }
+        fileByteArray.forEach((x, index) => core.mem.writeByte(index,x));
+        console.log(core.mem.readByte(2).toString(16));
+        //step through
+    }
+}
+}, false);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 core.Operations[203].exec(core);
 console.log(memoryUnit.readByte(0x77FF).toString(16));

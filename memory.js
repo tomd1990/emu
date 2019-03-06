@@ -10,7 +10,7 @@
 // 0xFF80-0xFFFE: High RAM Area.
 // 0xFFFF: Interrupt Enable Register.
 //signed or unsigned
-class MMU {
+export default class MMU {
   constructor() {
     //biosloaded 1 if bios loaded 0 if not shares the same space with ROM
     this.biosloaded = 1;
@@ -170,4 +170,4 @@ class MMU {
   }
 }
 
-exports.MMU = MMU;
+//exports.MMU = MMU;

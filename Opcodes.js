@@ -9615,4 +9615,4 @@ opcodes_CB[255] = {
     cpu.PC.addValue(this.blength);
   }
 }
-exports.OP = opcodes;
+export default opcodes;
