@@ -7,7 +7,7 @@ import opcodes from './Opcodes.js';
 
 
 
-
+document.getElementById('iterator').style.visibility = 'hidden';
 
 class Register_8 {
   constructor(content) {
@@ -78,28 +78,32 @@ class CPU_Z80 {
     console.log("| PC:"+this.PC.getValue().toString(16)+" |");
     console.log("| m_clock:"+ this._clock.m +" | t_clock:"+ this._clock.t+" |");
   }
+  step() {
+    console.log(this.mem.readByte(this.PC.getValue()));
+    this.Operations[this.mem.readByte(this.PC.getValue())].exec(this);
+    this.cpuDump();
+  }
 }
 var memoryUnit = new MMU;
 var core = new CPU_Z80(0, memoryUnit);
+document.getElementById('iterator').addEventListener("click", function() {
+  core.step();
+});
 
 core.A.setValue(0x00);
-core.B.setValue(0xFF);
-core.E.setValue(0xF0);
-core.SP.setValue(0xFF1E);
+core.B.setValue(0x00);
+core.E.setValue(0x00);
+core.SP.setValue(0x0000);
 core.PC.setValue(0x0000);
-core.mem.writeByte(0x0001,0x0D);
-core.mem.writeByte(0x77FF,0xAF);
-core.H.setValue(0x77);
-core.L.setValue(0xFF);
-core.F.setValue(0x10);
-core.mem.writeByte(0x0001,0xCB);
+core.H.setValue(0x00);
+core.L.setValue(0x00);
+core.F.setValue(0x00);
 //core.Operations[3].exec(core);
 //core.Operations[8].exec(core,0xAAAA);
 //core.A.addValue(-1*0x60);
-//core.Operations[145].exec(core);
+core.Operations[175].exec(core);
 //core.Operations[196].exec(core);
 var fileByteArray = [];
-
 document.querySelector('input').addEventListener('change', function() {
 
   var reader = new FileReader();
@@ -113,8 +117,9 @@ document.querySelector('input').addEventListener('change', function() {
            fileByteArray.push(array[i]);
         }
         fileByteArray.forEach((x, index) => core.mem.writeByte(index,x));
-        console.log(core.mem.readByte(2).toString(16));
+        console.log(core.mem.readByte(3).toString(16));
         //step through
+        document.getElementById('iterator').style.visibility = 'visible';
     }
 }
 }, false);
@@ -123,17 +128,5 @@ document.querySelector('input').addEventListener('change', function() {
 
 
 
-
-
-
-
-
-
-
-
-
-core.Operations[203].exec(core);
-console.log(memoryUnit.readByte(0x77FF).toString(16));
 //console.log(memoryUnit.readByte(0x110E).toString(16));
-core.cpuDump();
 // //console.log(0x3FFF);

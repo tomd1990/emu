@@ -3745,6 +3745,28 @@ opcodes[174] = {
       cpu.PC.addValue(this.blength);
     }
 }
+opcodes[175] = {
+    mnemonic: "XOR A",
+    blength: 1,
+    m_cycle: 1,
+    t_cycle: 4,
+    exec: function(cpu) {
+      let a = cpu.A.getValue();
+      let f = cpu.F.getValue();
+      f&=0x80;
+      cpu.A.setValue(a^a);
+      if(cpu.A.getValue() == 0) {
+        f |= 0x80;
+      }
+      else {
+        f &= 0x70;
+      }
+      cpu.F.setValue(f);
+      cpu._clock.m+=this.m_cycle;
+      cpu._clock.t+=this.t_cycle;
+      cpu.PC.addValue(this.blength);
+    }
+}
 opcodes[176] = {
     mnemonic: "OR B",
     blength: 1,
