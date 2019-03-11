@@ -79,7 +79,7 @@ class CPU_Z80 {
     console.log("| m_clock:"+ this._clock.m +" | t_clock:"+ this._clock.t+" |");
   }
   step() {
-    console.log(this.mem.readByte(this.PC.getValue()));
+    console.log(this.Operations[this.mem.readByte(this.PC.getValue())].mnemonic);
     this.Operations[this.mem.readByte(this.PC.getValue())].exec(this);
     this.cpuDump();
   }
@@ -101,7 +101,7 @@ core.F.setValue(0x00);
 //core.Operations[3].exec(core);
 //core.Operations[8].exec(core,0xAAAA);
 //core.A.addValue(-1*0x60);
-core.Operations[175].exec(core);
+//core.Operations[175].exec(core);
 //core.Operations[196].exec(core);
 var fileByteArray = [];
 document.querySelector('input').addEventListener('change', function() {
@@ -117,7 +117,9 @@ document.querySelector('input').addEventListener('change', function() {
            fileByteArray.push(array[i]);
         }
         fileByteArray.forEach((x, index) => core.mem.writeByte(index,x));
-        console.log(core.mem.readByte(3).toString(16));
+        //console.log(fileByteArray);
+        core.mem.writeByte(0x0006,0x80);
+        core.mem.writeByte(0x0005,0x01);
         //step through
         document.getElementById('iterator').style.visibility = 'visible';
     }

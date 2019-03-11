@@ -59,9 +59,7 @@ opcodes[3] = {
   t_cycle: 8,
   exec: function(cpu) {
     //write into memory need memory access apis
-    let c = '00' + cpu.C.getValue().toString(16);
-    let b = (cpu.B.getValue()<<8).toString(16);
-    let BC = parseInt(b,16) + parseInt(c,16) + 1;
+    let BC = ((cpu.B.getValue()<<8)|(cpu.C.getValue()))+1;
     cpu.B.setValue((BC&0xFF00)>>>8);
     cpu.C.setValue(BC&0x00FF);
     cpu._clock.m+=this.m_cycle;
@@ -198,12 +196,8 @@ opcodes[9] = {
   exec: function(cpu) {
     // - 0 H C
     let f = cpu.F.getValue();
-    let c = '00' + cpu.C.getValue().toString(16);
-    let b = (cpu.B.getValue()<<8).toString(16);
-    let BC = parseInt(b,16) + parseInt(c,16);
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let BC = (cpu.B.getValue()<<8)|(cpu.C.getValue());
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     if( (HL + BC) > 0xFFFF) {
       //Carry flag
       f |= 0x10;
@@ -235,9 +229,7 @@ opcodes[10] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let c = '00' + cpu.C.getValue().toString(16);
-    let b = (cpu.B.getValue()<<8).toString(16);
-    let BC = parseInt(b,16) + parseInt(c,16);
+    let BC = (cpu.B.getValue()<<8)|(cpu.C.getValue());
     cpu.A.setValue(cpu.mem.readByte(BC));
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -250,9 +242,7 @@ opcodes[11] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let c = '00' + cpu.C.getValue().toString(16);
-    let b = (cpu.B.getValue()<<8).toString(16);
-    let BC = parseInt(b,16) + parseInt(c,16) -1;
+    let BC = ((cpu.B.getValue()<<8)|(cpu.C.getValue()))-1;
     cpu.B.setValue((BC&0xFF00)>>>8);
     cpu.C.setValue(BC&0x00FF);
     cpu._clock.m+=this.m_cycle;
@@ -395,10 +385,8 @@ opcodes[18] = {
   t_cycle: 8,
   exec: function(cpu) {
     //write into memory need memory access apis
-    let e = '00' + cpu.E.getValue().toString(16);
-    let d = (cpu.D.getValue()<<8).toString(16);
-    let add = parseInt(d,16) + parseInt(e,16);
-    cpu.mem.writeByte(add,cpu.A.getValue());
+    let DE = (cpu.D.getValue()<<8)|(cpu.E.getValue());
+    cpu.mem.writeByte(DE,cpu.A.getValue());
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
     cpu.PC.addValue(this.blength);
@@ -411,9 +399,7 @@ opcodes[19] = {
   t_cycle: 8,
   exec: function(cpu) {
     //write into memory need memory access apis
-    let e = '00' + cpu.E.getValue().toString(16);
-    let d = (cpu.D.getValue()<<8).toString(16);
-    let DE = parseInt(d,16) + parseInt(e,16) + 1;
+    let DE = ((cpu.D.getValue()<<8)|(cpu.E.getValue()))+1;
     cpu.D.setValue((DE&0xFF00)>>>8);
     cpu.E.setValue(DE&0x00FF);
     cpu._clock.m+=this.m_cycle;
@@ -542,12 +528,8 @@ opcodes[25] = {
   exec: function(cpu) {
     // - 0 H C
     let f = cpu.F.getValue();
-    let e = '00' + cpu.E.getValue().toString(16);
-    let d = (cpu.D.getValue()<<8).toString(16);
-    let DE = parseInt(d,16) + parseInt(e,16);
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let DE = (cpu.D.getValue()<<8)|(cpu.E.getValue());
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     if( (HL + DE) > 0xFFFF) {
       //Carry flag
       f |= 0x10;
@@ -578,9 +560,7 @@ opcodes[26] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let e = '00' + cpu.E.getValue().toString(16);
-    let d = (cpu.D.getValue()<<8).toString(16);
-    let DE = parseInt(d,16) + parseInt(e,16);
+    let DE = (cpu.D.getValue()<<8)|(cpu.E.getValue());
     cpu.A.setValue(cpu.mem.readByte(DE));
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -593,9 +573,7 @@ opcodes[27] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let e = '00' + cpu.E.getValue().toString(16);
-    let d = (cpu.D.getValue()<<8).toString(16);
-    let DE = parseInt(d,16) + parseInt(e,16) -1;
+    let DE = ((cpu.D.getValue()<<8)|(cpu.E.getValue()))-1;
     cpu.D.setValue((DE&0xFF00)>>>8);
     cpu.E.setValue(DE&0x00FF);
     cpu._clock.m+=this.m_cycle;
@@ -762,9 +740,7 @@ opcodes[35] = {
   t_cycle: 8,
   exec: function(cpu) {
     //write into memory need memory access apis
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16) + 1;
+    let HL = ((cpu.H.getValue()<<8)|(cpu.L.getValue()))+1;
     cpu.H.setValue((HL&0xFF00)>>>8);
     cpu.L.setValue(HL&0x00FF);
     cpu._clock.m+=this.m_cycle;
@@ -920,9 +896,7 @@ opcodes[41] = {
   exec: function(cpu) {
     // - 0 H C
     let f = cpu.F.getValue();
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     if( (HL + HL) > 0xFFFF) {
       //Carry flag
       f |= 0x10;
@@ -954,9 +928,7 @@ opcodes[42] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.A.setValue(cpu.mem.readByte(HL));
     cpu.L.setValue((HL+1)&0x00FF);
     cpu.H.setValue(((HL+1)>>8)&0x00FF);
@@ -971,9 +943,7 @@ opcodes[43] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16) -1;
+    let HL = ((cpu.H.getValue()<<8)|(cpu.L.getValue()))-1;
     cpu.H.setValue((HL&0xFF00)>>>8);
     cpu.L.setValue(HL&0x00FF);
     cpu._clock.m+=this.m_cycle;
@@ -1107,17 +1077,15 @@ opcodes[49] = {
   }
 }
 opcodes[50] = {
-  mnemonic: "LD (HL-), A",
+  mnemonic: "LD (HL----), A",
   blength: 1,
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let add = parseInt(h,16) + parseInt(l,16);
-    cpu.L.setValue((add-1)&0x00FF);
-    cpu.H.setValue(((add-11)>>8)&0x00FF);
-    cpu.mem.writeByte(add,cpu.A.getValue());
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
+    cpu.L.setValue((HL-1)&0x00FF);
+    cpu.H.setValue(((HL-1)>>8)&0x00FF);
+    cpu.mem.writeByte(HL,cpu.A.getValue());
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
     cpu.PC.addValue(this.blength);
@@ -1142,9 +1110,7 @@ opcodes[52] = {
   m_cycle: 3,
   t_cycle: 12,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     let val = new Uint8Array(1);
     val[0]  = cpu.mem.readByte(HL);
     let hc = val[0]&0x0F;
@@ -1178,9 +1144,7 @@ opcodes[53] = {
   m_cycle: 3,
   t_cycle: 12,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     let val = new Uint8Array(1);
     val[0]  = cpu.mem.readByte(HL);
     let hc = val[0]&0x0F;
@@ -1215,9 +1179,7 @@ opcodes[54] = {
   m_cycle: 3,
   t_cycle: 12,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     let d8 = cpu.mem.readByte(cpu.PC.getValue()+1);
     cpu.mem.writeByte(HL, d8)
     cpu._clock.m+=this.m_cycle;
@@ -1271,9 +1233,7 @@ opcodes[57] = {
   exec: function(cpu) {
     // - 0 H C
     let f = cpu.F.getValue();
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     if( (HL + cpu.SP.getValue()) > 0xFFFF) {
       //Carry flag
       f |= 0x10;
@@ -1305,9 +1265,7 @@ opcodes[58] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.A.setValue(cpu.mem.readByte(HL));
     cpu.L.setValue((HL-1)&0x00FF);
     cpu.H.setValue(((HL-1)>>8)&0x00FF);
@@ -1493,9 +1451,7 @@ opcodes[70] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.B.setValue(cpu.mem.readByte(HL));
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -1592,9 +1548,7 @@ opcodes[78] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.C.setValue(cpu.mem.readByte(HL));
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -1691,9 +1645,7 @@ opcodes[86] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.D.setValue(cpu.mem.readByte(HL));
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -1790,9 +1742,7 @@ opcodes[94] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.E.setValue(cpu.mem.readByte(HL));
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -1889,9 +1839,7 @@ opcodes[102] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.H.setValue(cpu.mem.readByte(HL));
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -1988,9 +1936,7 @@ opcodes[110] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.L.setValue(cpu.mem.readByte(HL));
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -2015,9 +1961,7 @@ opcodes[112] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.mem.writeByte(HL, cpu.B.getValue());
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -2030,9 +1974,7 @@ opcodes[113] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.mem.writeByte(HL, cpu.C.getValue());
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -2045,9 +1987,7 @@ opcodes[114] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.mem.writeByte(HL, cpu.D.getValue());
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -2060,9 +2000,7 @@ opcodes[115] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.mem.writeByte(HL, cpu.E.getValue());
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -2075,9 +2013,7 @@ opcodes[116] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.mem.writeByte(HL, cpu.H.getValue());
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -2090,9 +2026,7 @@ opcodes[117] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.mem.writeByte(HL, cpu.L.getValue());
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -2117,9 +2051,7 @@ opcodes[119] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.mem.writeByte(HL, cpu.A.getValue());
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -2204,9 +2136,7 @@ opcodes[126] = {
   m_cycle: 2,
   t_cycle: 8,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.A.setValue(cpu.mem.readByte(HL));
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -2448,9 +2378,7 @@ opcodes[134] = {
     t_cycle: 8,
     exec: function(cpu) {
       let a = cpu.A.getValue();
-      let l = '00' + cpu.L.getValue().toString(16);
-      let h = (cpu.H.getValue()<<8).toString(16);
-      let HL = parseInt(h,16) + parseInt(l,16);
+      let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
       let val = cpu.mem.readByte(HL);
       let f = cpu.F.getValue();
       if( (a+val) > 0xFF ) {
@@ -2745,9 +2673,7 @@ opcodes[142] = {
     t_cycle: 8,
     exec: function(cpu) {
       let a = cpu.A.getValue();
-      let l = '00' + cpu.L.getValue().toString(16);
-      let h = (cpu.H.getValue()<<8).toString(16);
-      let HL = parseInt(h,16) + parseInt(l,16);
+      let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
       let val = cpu.mem.readByte(HL);
       let f = cpu.F.getValue();
       let carry = (cpu.F.getValue()&0x10)>>>4;
@@ -3037,9 +2963,7 @@ opcodes[150] = {
     t_cycle: 8,
     exec: function(cpu) {
       let a = cpu.A.getValue();
-      let l = '00' + cpu.L.getValue().toString(16);
-      let h = (cpu.H.getValue()<<8).toString(16);
-      let HL = parseInt(h,16) + parseInt(l,16);
+      let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
       let val = cpu.mem.readByte(HL);
       let f = cpu.F.getValue();
       if( (a-val) < 0 ) {
@@ -3318,9 +3242,7 @@ opcodes[158] = {
     t_cycle: 8,
     exec: function(cpu) {
       let a = cpu.A.getValue();
-      let l = '00' + cpu.L.getValue().toString(16);
-      let h = (cpu.H.getValue()<<8).toString(16);
-      let HL = parseInt(h,16) + parseInt(l,16);
+      let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
       let val = cpu.mem.readByte(HL);
       let f = cpu.F.getValue();
       let carry = (f&0x10)>>>4;
@@ -3538,9 +3460,7 @@ opcodes[166] = {
     t_cycle: 8,
     exec: function(cpu) {
       let a = cpu.A.getValue();
-      let l = '00' + cpu.L.getValue().toString(16);
-      let h = (cpu.H.getValue()<<8).toString(16);
-      let HL = parseInt(h,16) + parseInt(l,16);
+      let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
       let val = cpu.mem.readByte(HL);
       let f = cpu.F.getValue();
       f|=0x20;
@@ -3726,9 +3646,7 @@ opcodes[174] = {
     t_cycle: 8,
     exec: function(cpu) {
       let a = cpu.A.getValue();
-      let l = '00' + cpu.L.getValue().toString(16);
-      let h = (cpu.H.getValue()<<8).toString(16);
-      let HL = parseInt(h,16) + parseInt(l,16);
+      let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
       let val = cpu.mem.readByte(HL);
       let f = cpu.F.getValue();
       f&=0x80;
@@ -3912,9 +3830,7 @@ opcodes[182] = {
     t_cycle: 8,
     exec: function(cpu) {
       let a = cpu.A.getValue();
-      let l = '00' + cpu.L.getValue().toString(16);
-      let h = (cpu.H.getValue()<<8).toString(16);
-      let HL = parseInt(h,16) + parseInt(l,16);
+      let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
       let val = cpu.mem.readByte(HL);
       let f = cpu.F.getValue();
       f&=0x80;
@@ -4170,9 +4086,7 @@ opcodes[190] = {
   t_cycle: 8,
   exec: function(cpu) {
     let a = cpu.A.getValue();
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     let val = cpu.mem.readByte(HL);
     let f = cpu.F.getValue();
     if( (a-val) < 0 ) {
@@ -5022,9 +4936,7 @@ opcodes[233] = {
   m_cycle: 1,
   t_cycle: 4,
   exec: function(cpu) {
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     cpu.PC.setValue(HL);
     cpu._clock.m+=this.m_cycle;
     cpu._clock.t+=this.t_cycle;
@@ -5270,9 +5182,9 @@ opcodes[251] = {
 }
 opcodes[254] = {
   mnemonic: "CP d8",
-  blength: 1,
-  m_cycle: 1,
-  t_cycle: 4,
+  blength: 2,
+  m_cycle: 2,
+  t_cycle: 8,
   exec: function(cpu) {
     let a = cpu.A.getValue();
     let d8 = cpu.mem.readByte(cpu.PC.getValue()+1);
@@ -5483,9 +5395,7 @@ opcodes_CB[6] = {
   t_cycle: 16,
   exec: function(cpu) {
     let f = 0x00;
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     let hl_v = cpu.mem.readByte(HL);
     let end = hl_v&0x80;
     if(end) {
@@ -5693,9 +5603,7 @@ opcodes_CB[14] = {
   t_cycle: 16,
   exec: function(cpu) {
     let f = 0x00;
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     let hl_v = cpu.mem.readByte(HL);
     let end = hl_v&0x01;
     if(end) {
@@ -5906,9 +5814,7 @@ opcodes_CB[22] = {
   exec: function(cpu) {
     let f = 0x00;
     let c = (cpu.F.getValue()&0x10)>>4;
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     let hl_v = cpu.mem.readByte(HL);
     let end = hl_v&0x80;
     if(end) {
@@ -6117,9 +6023,7 @@ opcodes_CB[30] = {
   exec: function(cpu) {
     let f = 0x00;
     let c = (cpu.F.getValue()&0x10)<<3;
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     let hl_v = cpu.mem.readByte(HL);
     let end = hl_v&0x80;
     if(end) {
@@ -6321,9 +6225,7 @@ opcodes_CB[38] = {
   t_cycle: 8,
   exec: function(cpu) {
     let f = 0x00;
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     let hl_v = cpu.mem.readByte(HL);
     let end = hl_v&0x80;
     if(end) {
@@ -6530,9 +6432,7 @@ opcodes_CB[46] = {
   t_cycle: 8,
   exec: function(cpu) {
     let f = 0x00;
-    let l = '00' + cpu.L.getValue().toString(16);
-    let h = (cpu.H.getValue()<<8).toString(16);
-    let HL = parseInt(h,16) + parseInt(l,16);
+    let HL = (cpu.H.getValue()<<8)|(cpu.L.getValue());
     let hl_v = cpu.mem.readByte(HL);
     let end = hl_v&0x01;
     let c = hl_v&0x80;
