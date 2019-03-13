@@ -1077,7 +1077,7 @@ opcodes[49] = {
   }
 }
 opcodes[50] = {
-  mnemonic: "LD (HL----), A",
+  mnemonic: "LD (HL-), A",
   blength: 1,
   m_cycle: 2,
   t_cycle: 8,
